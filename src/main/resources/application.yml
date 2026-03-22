@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgres://localhost:5432/clickerheroes
+    username: clickerheroes
+    password: clickerheroes
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/ddl.sql
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
