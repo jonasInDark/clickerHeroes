@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgres://localhost:5432/clickerheroes
-    username: clickerheroes
-    password: clickerheroes
+    url: jdbc:postgresql://localhost:5432/clickerheroes
+    username: admin
+    password: admin
   sql:
     init:
       mode: always
@@ -12,6 +12,8 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+    database: PostgreSQL
+    defer-datasource-initialization: false
     properties:
       hibernate:
         format_sql: true
