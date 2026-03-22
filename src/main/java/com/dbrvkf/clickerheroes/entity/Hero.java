@@ -1,48 +1,56 @@
 package com.dbrvkf.clickerheroes.entity;
 
-import com.dbrvkf.clickerheroes.entity.base.BaseEntity;
+import com.dbrvkf.clickerheroes.entity.base.ImmutableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Immutable;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
+import org.hibernate.annotations.Immutable;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Immutable
 @Entity
 @Table(name = "heroes")
-@Immutable
-public class Hero extends BaseEntity {
+public class Hero extends ImmutableEntity {
 
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
+  @Column(name = "name", nullable = false, length = 20)
+  private String name;
 
-    @Column(name = "details", nullable = false)
-    private String details;
+  @Column(name = "details", nullable = false)
+  private String details;
 
-    @ColumnDefault("1.000")
-    @Column(name = "base_dps_mantissa", nullable = false)
-    private Double baseDpsMantissa;
+  @Column(name = "base_dps_mantissa", nullable = false)
+  private Double baseDpsMantissa;
 
-    @ColumnDefault("1")
-    @Column(name = "base_dps_exponent", nullable = false)
-    private Integer baseDpsExponent;
+  @Column(name = "base_dps_exponent", nullable = false)
+  private Integer baseDpsExponent;
 
-    @ColumnDefault("1.000")
-    @Column(name = "base_price_mantissa", nullable = false)
-    private Double basePriceMantissa;
+  @Column(name = "base_price_mantissa", nullable = false)
+  private Double basePriceMantissa;
 
-    @ColumnDefault("1")
-    @Column(name = "base_price_exponent", nullable = false)
-    private Integer basePriceExponent;
+  @Column(name = "base_price_exponent", nullable = false)
+  private Integer basePriceExponent;
 
-    @OneToMany(mappedBy = "heroes")
-    private List<HeroSkill> heroSkills = new ArrayList<>();
+  @OneToMany(mappedBy = "hero")
+  private List<HeroSkill> heroSkills = new ArrayList<>();
 
+  @Builder
+  public Hero(
+      String name,
+      String details,
+      Double baseDpsMantissa,
+      Integer baseDpsExponent,
+      Double basePriceMantissa,
+      Integer basePriceExponent) {
+    this.name = name;
+    this.details = details;
+    this.baseDpsMantissa = baseDpsMantissa;
+    this.baseDpsExponent = baseDpsExponent;
+    this.basePriceMantissa = basePriceMantissa;
+    this.basePriceExponent = basePriceExponent;
+  }
 }
