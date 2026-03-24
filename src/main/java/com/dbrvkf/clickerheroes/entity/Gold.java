@@ -1,6 +1,7 @@
 package com.dbrvkf.clickerheroes.entity;
 
 import com.dbrvkf.clickerheroes.entity.base.MutableEntity;
+import com.dbrvkf.clickerheroes.entity.common.ScientificNumber;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,9 +19,6 @@ public class Gold extends MutableEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column(name = "gold_mantissa", nullable = false)
-  private Double goldMantissa;
-
-  @Column(name = "gold_exponent", nullable = false)
-  private Integer goldExponent;
+  @Embedded
+  private ScientificNumber gold;
 }

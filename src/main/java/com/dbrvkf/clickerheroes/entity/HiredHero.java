@@ -1,6 +1,7 @@
 package com.dbrvkf.clickerheroes.entity;
 
 import com.dbrvkf.clickerheroes.entity.base.MutableEntity;
+import com.dbrvkf.clickerheroes.entity.common.ScientificNumber;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,17 +24,19 @@ public class HiredHero extends MutableEntity {
   @JoinColumn(name = "hero_id", nullable = false)
   private Hero hero;
 
-  @Column(name = "dps_mantissa", nullable = false)
-  private Double dpsMantissa;
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = "mantissa", column = @Column(name = "dps_mantissa")),
+    @AttributeOverride(name = "exponent", column = @Column(name = "dps_exponent"))
+  })
+  private ScientificNumber dps;
 
-  @Column(name = "dps_exponent", nullable = false)
-  private Integer dpsExponent;
-
-  @Column(name = "price_mantissa", nullable = false)
-  private Double priceMantissa;
-
-  @Column(name = "price_exponent", nullable = false)
-  private Integer priceExponent;
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = "mantissa", column = @Column(name = "price_mantissa")),
+    @AttributeOverride(name = "exponent", column = @Column(name = "price_exponent"))
+  })
+  private ScientificNumber price;
 
   @Column(name = "level", nullable = false)
   private Integer level;
@@ -49,10 +52,8 @@ public class HiredHero extends MutableEntity {
       Integer level) {
     this.user = user;
     this.hero = hero;
-    this.dpsMantissa = dpsMantissa;
-    this.dpsExponent = dpsExponent;
-    this.priceMantissa = priceMantissa;
-    this.priceExponent = priceExponent;
+    this.dps = new ScientificNumber(dpsMantissa, dpsExponent);
+    this.price = new ScientificNumber(priceMantissa, priceExponent);
     this.level = level;
   }
 }

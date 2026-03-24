@@ -1,6 +1,7 @@
 package com.dbrvkf.clickerheroes.entity;
 
 import com.dbrvkf.clickerheroes.entity.base.ImmutableEntity;
+import com.dbrvkf.clickerheroes.entity.common.ScientificNumber;
 import com.dbrvkf.clickerheroes.entity.constant.HeroSkillType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,12 +30,10 @@ public class HeroSkill extends ImmutableEntity {
   @Column(name = "required_level", nullable = false)
   private Integer requiredLevel;
 
-  @Column(name = "required_gold_mantissa", nullable = false)
-  private Double requiredGoldMantissa;
+  @Embedded
+  private ScientificNumber requiredGold;
 
-  @Column(name = "required_gold_exponent", nullable = false)
-  private Integer requiredGoldExponent;
-
+  @Enumerated(EnumType.STRING)
   @Column(name = "skill_type", nullable = false, length = 20)
   private HeroSkillType skillType;
 
@@ -51,8 +50,7 @@ public class HeroSkill extends ImmutableEntity {
     this.name = name;
     this.details = details;
     this.requiredLevel = requiredLevel;
-    this.requiredGoldMantissa = requiredGoldMantissa;
-    this.requiredGoldExponent = requiredGoldExponent;
+    this.requiredGold = new ScientificNumber(requiredGoldMantissa, requiredGoldExponent);
     this.skillType = skillType;
   }
 }

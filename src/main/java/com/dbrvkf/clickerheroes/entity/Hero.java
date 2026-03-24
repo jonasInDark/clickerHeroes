@@ -1,12 +1,16 @@
 package com.dbrvkf.clickerheroes.entity;
 
 import com.dbrvkf.clickerheroes.entity.base.ImmutableEntity;
+import com.dbrvkf.clickerheroes.entity.common.ScientificNumber;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
 
@@ -23,20 +27,22 @@ public class Hero extends ImmutableEntity {
   @Column(name = "details", nullable = false)
   private String details;
 
-  @Column(name = "base_dps_mantissa", nullable = false)
-  private Double baseDpsMantissa;
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = "mantissa", column = @Column(name = "base_dps_mantissa")),
+    @AttributeOverride(name = "exponent", column = @Column(name = "base_dps_exponent"))
+  })
+  private ScientificNumber baseDps;
 
-  @Column(name = "base_dps_exponent", nullable = false)
-  private Integer baseDpsExponent;
-
-  @Column(name = "base_price_mantissa", nullable = false)
-  private Double basePriceMantissa;
-
-  @Column(name = "base_price_exponent", nullable = false)
-  private Integer basePriceExponent;
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = "mantissa", column = @Column(name = "base_price_mantissa")),
+    @AttributeOverride(name = "exponent", column = @Column(name = "base_price_exponent"))
+  })
+  private ScientificNumber basePrice;
 
   @OneToMany(mappedBy = "hero")
-  private List<HeroSkill> heroSkills = new ArrayList<>();
+  private Set<HeroSkill> heroSkills = new LinkedHashSet<>();
 
   @Builder
   public Hero(
@@ -48,9 +54,7 @@ public class Hero extends ImmutableEntity {
       Integer basePriceExponent) {
     this.name = name;
     this.details = details;
-    this.baseDpsMantissa = baseDpsMantissa;
-    this.baseDpsExponent = baseDpsExponent;
-    this.basePriceMantissa = basePriceMantissa;
-    this.basePriceExponent = basePriceExponent;
+    this.baseDps = new ScientificNumber(baseDpsMantissa, baseDpsExponent);
+    this.basePrice = new ScientificNumber(basePriceMantissa, basePriceExponent);
   }
 }

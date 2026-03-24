@@ -23,6 +23,7 @@ public class ActivatedHeroSkill extends MutableEntity {
   private HeroSkill heroSkill;
 
   @Setter
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 10)
   private HeroSkillStatus status = HeroSkillStatus.NOT_LEARNED;
 }
