@@ -2,13 +2,14 @@ package com.dbrvkf.clickerheroes.entity;
 
 import com.dbrvkf.clickerheroes.entity.base.MutableEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "gold")
 public class Gold extends MutableEntity {
