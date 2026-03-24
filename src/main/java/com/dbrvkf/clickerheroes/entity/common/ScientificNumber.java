@@ -1,31 +1,48 @@
 package com.dbrvkf.clickerheroes.entity.common;
 
 import jakarta.persistence.Embeddable;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Embeddable
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Embeddable
 public class ScientificNumber {
-  private static double[] POWER_OF_TEN = {
-    1.0,
-    10.0,
-    100.0,
-    1000.0,
-    10000.0,
-    100000.0,
-    1000000.0,
-    10000000.0,
-    100000000.0,
-    1000000000.0,
-    10000000000.0
+  private static double[] POSITIVE_POWER_OF_TEN = {
+    1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10
   };
+  private static double[] NEGATIVE_POWER_OF_TEN = {1e0, 1e-1, 1e-2, 1e-3};
+  private static final double EPSILON = 1e-8;
   private double mantissa;
   private int exponent;
 
-  public void multiply(int value) {
+  public ScientificNumber(double mantissa, int exponent) {
+    this.mantissa = mantissa;
+    this.exponent = exponent;
+    normalize();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    ScientificNumber that = (ScientificNumber) o;
+    return Math.abs(mantissa - that.mantissa) < EPSILON && exponent == that.exponent;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(mantissa, exponent);
+  }
+
+  public boolean isZero() {
+    return Math.abs(mantissa) < EPSILON;
+  }
+
+  public void multiply(double value) {
     mantissa *= value;
     normalize();
   }
@@ -36,23 +53,49 @@ public class ScientificNumber {
     normalize();
   }
 
-  // todo
   public void subtract(ScientificNumber other) {
+    int exponentGap = exponent - other.exponent;
+    if (exponentGap >= 0) {
+      subtractIfGapIsPositive(other);
+      return;
+    }
+    setZero();
+  }
 
+  private void subtractIfGapIsPositive(ScientificNumber other) {
+    int exponentGap = exponent - other.exponent;
+    if (exponentGap > 3) {
+      return;
+    }
+    mantissa -= other.mantissa * NEGATIVE_POWER_OF_TEN[exponentGap];
+    normalize();
   }
 
   private void normalize() {
-    if ((long) mantissa == 0) {
+    if (isZero() || mantissa < 0) {
+      setZero();
       return;
     }
     double logged = Math.log10(mantissa);
-    int exp = (int) Math.floor(logged);
-    mantissa /= POWER_OF_TEN[exp];
+    int exp = (int) Math.floor(logged + EPSILON);
+    mantissa /= getPowerOfTen(exp);
     exponent += exp;
     truncate();
   }
 
+  private double getPowerOfTen(int exp) {
+    if (exp >= 0) {
+      return POSITIVE_POWER_OF_TEN[exp];
+    }
+    return NEGATIVE_POWER_OF_TEN[-exp];
+  }
+
+  private void setZero() {
+    mantissa = 0.0;
+    exponent = 0;
+  }
+
   private void truncate() {
-    mantissa = Math.floor(mantissa * 1000.0) / 1000.0;
+    mantissa = Math.floor((mantissa + EPSILON) * 1000.0) / 1000.0;
   }
 }
