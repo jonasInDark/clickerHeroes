@@ -4,6 +4,7 @@ import com.dbrvkf.clickerheroes.entity.base.MutableEntity;
 import com.dbrvkf.clickerheroes.entity.common.ScientificNumber;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,4 +22,10 @@ public class Gold extends MutableEntity {
 
   @Embedded
   private ScientificNumber gold;
+
+  @Builder
+  public Gold(User user, double goldMantissa, int goldExponent) {
+    this.user = user;
+    this.gold = new ScientificNumber(goldMantissa, goldExponent);
+  }
 }

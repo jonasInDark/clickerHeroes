@@ -4,6 +4,7 @@ import com.dbrvkf.clickerheroes.entity.base.MutableEntity;
 import com.dbrvkf.clickerheroes.entity.common.ScientificNumber;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,5 +21,11 @@ public class Monster extends MutableEntity {
   private User user;
 
   @Embedded
-  private ScientificNumber scientificNumber;
+  private ScientificNumber hp;
+
+  @Builder
+  public Monster(User user, double hpMantissa, int hpExponent) {
+    this.user = user;
+    this.hp = new ScientificNumber(hpMantissa, hpExponent);
+  }
 }
