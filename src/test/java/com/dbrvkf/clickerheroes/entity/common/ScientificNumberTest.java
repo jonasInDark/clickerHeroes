@@ -9,6 +9,18 @@ import org.junit.jupiter.api.Test;
 class ScientificNumberTest {
 
   @Nested
+  @DisplayName("init ZERO")
+  class Zero {
+    @Test
+    @DisplayName("ZERO")
+    void zero() {
+      ScientificNumber zero = new ScientificNumber(0, 0);
+      assertAll(
+          () -> assertEquals(zero.getExponent(), 0), () -> assertEquals(zero.getMantissa(), 0.0));
+    }
+  }
+
+  @Nested
   @DisplayName("normalize")
   class NormalizeTest {
     @Test
@@ -150,7 +162,120 @@ class ScientificNumberTest {
       ScientificNumber inst1 = createInstanceByInteger(3141);
       ScientificNumber inst2 = createInstanceByInteger(3141);
       inst1.subtract(inst2);
-      ScientificNumber expected = createInstanceByInteger(0);;
+      ScientificNumber expected = createInstanceByInteger(0);
+      ;
+      assertEquals(expected, inst1);
+    }
+  }
+
+  @Nested
+  @DisplayName("add")
+  class Add {
+    @Test
+    @DisplayName("0 + 0 = 0")
+    void add1() {
+      ScientificNumber inst1 = createInstanceByInteger(0);
+      ScientificNumber inst2 = createInstanceByInteger(0);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(0);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("1 + 0 = 0")
+    void add2() {
+      ScientificNumber inst1 = createInstanceByInteger(1);
+      ScientificNumber inst2 = createInstanceByInteger(0);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(1);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("3141 + 1 = 3.142 x 10**3")
+    void add3() {
+      ScientificNumber inst1 = createInstanceByInteger(3141);
+      ScientificNumber inst2 = createInstanceByInteger(1);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(3142);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("3141 + 41 = 3.182 x 10**3")
+    void add4() {
+      ScientificNumber inst1 = createInstanceByInteger(3141);
+      ScientificNumber inst2 = createInstanceByInteger(41);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(3182);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("3141 + 141 = 3.282 x 10**3")
+    void add5() {
+      ScientificNumber inst1 = createInstanceByInteger(3141);
+      ScientificNumber inst2 = createInstanceByInteger(141);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(3282);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("3141 + 3141 = 6.282 x 10**3")
+    void add6() {
+      ScientificNumber inst1 = createInstanceByInteger(3141);
+      ScientificNumber inst2 = createInstanceByInteger(3141);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(6282);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("3141000 + 3141 = 3.144 x 10**6")
+    void add7() {
+      ScientificNumber inst1 = createInstanceByInteger(3141000);
+      ScientificNumber inst2 = createInstanceByInteger(3141);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(3144000);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("3141592 + 3141592 = 6.282 x 10**6")
+    void add8() {
+      ScientificNumber inst1 = createInstanceByInteger(3141592);
+      ScientificNumber inst2 = createInstanceByInteger(3141592);
+      inst1.add(inst2);
+      ScientificNumber expected = createInstanceByInteger(6282000);
+      assertEquals(expected, inst1);
+    }
+  }
+
+  @Nested
+  @DisplayName("addAll")
+  class AddAll {
+    @Test
+    @DisplayName("0 + {0, 0, 0} = 0")
+    void addAll1() {
+      ScientificNumber inst1 = createInstanceByInteger(0);
+      ScientificNumber[] inst2 = {
+        createInstanceByInteger(0), createInstanceByInteger(0), createInstanceByInteger(0)
+      };
+      inst1.addAll(inst2);
+      ScientificNumber expected = createInstanceByInteger(0);
+      assertEquals(expected, inst1);
+    }
+
+    @Test
+    @DisplayName("0 + {3141, 3141, 3141} = 9423")
+    void addAll2() {
+      ScientificNumber inst1 = createInstanceByInteger(0);
+      ScientificNumber[] inst2 = {
+        createInstanceByInteger(3141), createInstanceByInteger(3141), createInstanceByInteger(3141)
+      };
+      inst1.addAll(inst2);
+      ScientificNumber expected = createInstanceByInteger(9423);
       assertEquals(expected, inst1);
     }
   }

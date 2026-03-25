@@ -2,14 +2,13 @@ package com.dbrvkf.clickerheroes.entity.common;
 
 import jakarta.persistence.Embeddable;
 import java.util.Objects;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Embeddable
 public class ScientificNumber {
   private static double[] POSITIVE_POWER_OF_TEN = {
@@ -62,13 +61,46 @@ public class ScientificNumber {
     setZero();
   }
 
-  private void subtractIfGapIsPositive(ScientificNumber other) {
+  public void add(ScientificNumber other) {
+    int exponentGap = exponent - other.exponent;
+    if (exponentGap >= 0) {
+      addIfGapIsPositive(other);
+      return;
+    }
+    setNumber(other);
+  }
+
+  public void addAll(ScientificNumber[] others) {
+    for (ScientificNumber other : others) {
+      add(other);
+    }
+  }
+
+  private void addIfGapIsPositive(ScientificNumber other) {
+    applyOperation(other, 1.0);
+  }
+
+  private void applyOperation(ScientificNumber other, double signal) {
     int exponentGap = exponent - other.exponent;
     if (exponentGap > 3) {
       return;
     }
-    mantissa -= other.mantissa * NEGATIVE_POWER_OF_TEN[exponentGap];
+    mantissa += signal * other.mantissa * NEGATIVE_POWER_OF_TEN[exponentGap];
     normalize();
+  }
+
+  private void setNumber(ScientificNumber other) {
+    mantissa = other.mantissa;
+    exponent = other.exponent;
+  }
+
+  private void setZero() {
+    mantissa = 0.0;
+    exponent = 0;
+  }
+
+  private void subtractIfGapIsPositive(ScientificNumber other) {
+    applyOperation(other, -1.0);
   }
 
   private void normalize() {
@@ -88,11 +120,6 @@ public class ScientificNumber {
       return POSITIVE_POWER_OF_TEN[exp];
     }
     return NEGATIVE_POWER_OF_TEN[-exp];
-  }
-
-  private void setZero() {
-    mantissa = 0.0;
-    exponent = 0;
   }
 
   private void truncate() {
