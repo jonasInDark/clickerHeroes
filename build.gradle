@@ -1,3 +1,5 @@
+import java.awt.*
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.10'
@@ -55,43 +57,60 @@ dependencies {
     testImplementation('org.instancio:instancio-junit')
 }
 
-tasks.named('test') {
+def jacocoExcludes = [
+        "**/dto/**",
+        "**/exception/**",
+        "**/config/**",
+        "**/mapper/**",
+        "**/*Application*",
+        "**/*Interceptor*",
+        "**/*Filter*",
+        "**/Q*.class",
+        "**/*Event.class",
+        "**/entity/constant/**"
+]
+for (qPattern in "**/QA".."**/QZ") {
+    jacocoExcludes.add(qPattern + "*")
+}
+
+test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {
     dependsOn test
+    finalizedBy jacocoTestCoverageVerification
+
     reports {
         xml.required = true
         html.required = true
     }
-    def excludes = [
-            "**/dto/**",
-            "**/exception/**",
-            "**/config/**",
-            "**/mapper/**",
-            "**/*Application*",
-            "**/*Interceptor*",
-            "**/*Filter*",
-            "**/Q*.class",
-            "**/*Event.class"
-    ]
-    for (qPattern in "**/QA".."**/QZ") {
-        excludes.add(qPattern + "*")
-    }
+
     classDirectories.setFrom(files(classDirectories.files.collect {
-        fileTree(dir: it, exclude: excludes)
+        fileTree(dir: it, exclude: jacocoExcludes)
     }))
-}
 
-import java.awt.*
-
-tasks.named('jacocoTestReport') {
     doLast {
         def report = file("${layout.buildDirectory.get()}/reports/jacoco/test/html/index.html")
         if (report.exists()) {
             Desktop.desktop.browse(report.toURI())
         }
     }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
+            }
+        }
+    }
+
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: jacocoExcludes)
+    }))
 }
