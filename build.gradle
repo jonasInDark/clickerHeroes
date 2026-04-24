@@ -1,5 +1,3 @@
-import java.awt.*
-
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.10'
@@ -91,12 +89,10 @@ jacocoTestReport {
         fileTree(dir: it, exclude: jacocoExcludes)
     }))
 
-    doLast {
-        def report = file("${layout.buildDirectory.get()}/reports/jacoco/test/html/index.html")
-        if (report.exists()) {
-            Desktop.desktop.browse(report.toURI())
-        }
-    }
+}
+
+if (file('local.gradle').exists()) {
+    apply from: 'local.gradle'
 }
 
 jacocoTestCoverageVerification {
