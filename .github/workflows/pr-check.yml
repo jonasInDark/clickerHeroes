@@ -1,8 +1,8 @@
-name: PR Builder & Converage Check
+name: PR Builder & Coverage Check
 
 on:
   pull_request:
-    branches: [ main, dev ]
+    branches: [ main ]
 
 jobs:
   test:
