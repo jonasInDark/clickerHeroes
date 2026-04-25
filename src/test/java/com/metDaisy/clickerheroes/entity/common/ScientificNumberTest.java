@@ -1,10 +1,16 @@
 package com.metDaisy.clickerheroes.entity.common;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.metDaisy.clickerheroes.fixture.NumberFixture;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class ScientificNumberTest {
 
@@ -12,43 +18,29 @@ class ScientificNumberTest {
   @DisplayName("init ZERO")
   class Zero {
     @Test
-    @DisplayName("ZERO")
-    void zero() {
+    @DisplayName("값이 0인 경우 객체 생성 시 mantissa=0.0, exponent=0 와 같다")
+    void successToInitZero() {
       ScientificNumber zero = new ScientificNumber(0, 0);
       assertAll(
           () -> assertEquals(0, zero.getExponent()), () -> assertEquals(0.0, zero.getMantissa()));
     }
   }
 
-  @Nested
-  @DisplayName("normalize")
-  class NormalizeTest {
-    @Test
-    @DisplayName("3141592 = 3.141 x 10**6")
-    void normalize1() {
-      int source = 3141592;
-      ScientificNumber actual = new ScientificNumber(source, 0);
-      ScientificNumber expected = new ScientificNumber(3.141592, 6);
-      assertEquals(expected, actual);
-    }
+  @ParameterizedTest(name = "0보다 큰 임의의 정수에 대해 객체 생성 성공, {0}")
+  @MethodSource("provideIntegers")
+  void successToNormalize(int value) {
+    // Given
+    ScientificNumber actual = new ScientificNumber(value, 0);
 
-    @Test
-    @DisplayName("1 = 1 x 10**0")
-    void normalize2() {
-      int source = 1;
-      ScientificNumber actual = createInstanceByInteger(source);
-      ScientificNumber expected = new ScientificNumber(1.0, 0);
-      assertEquals(expected, actual);
-    }
+    // When
+    int expectedExponent = (int) Math.log10(value);
+    double rawMantissa = value / Math.pow(10, expectedExponent);
+    double expectedMantissa = Math.floor((rawMantissa + 1e-8) * 1000.0) / 1000.0;
 
-    @Test
-    @DisplayName("0 = 0 x 10**0")
-    void normalize3() {
-      int source = 0;
-      ScientificNumber actual = createInstanceByInteger(source);
-      ScientificNumber expected = new ScientificNumber(0.0, 0);
-      assertEquals(expected, actual);
-    }
+    // Then
+    assertThat(actual.getExponent()).as("지수 계산 오류").isEqualTo(expectedExponent);
+    assertThat(actual.getMantissa()).as("가수 범위 오류").isGreaterThanOrEqualTo(1.0).isLessThan(10.0);
+    assertThat(actual.getMantissa()).as("가수 정밀도 오류").isCloseTo(expectedMantissa, within(1e-8));
   }
 
   @Nested
@@ -280,7 +272,7 @@ class ScientificNumberTest {
     }
   }
 
-  private static void multiplyBySelf(int value) {
+  private void multiplyBySelf(int value) {
     ScientificNumber actual = createInstanceByInteger(value);
     ScientificNumber inst = createInstanceByInteger(value);
     actual.multiply(inst);
@@ -288,7 +280,7 @@ class ScientificNumberTest {
     assertEquals(expected, actual);
   }
 
-  private static void multiplyByScalar(int scalar) {
+  private void multiplyByScalar(int scalar) {
     int source = 314;
     int target = source * scalar;
     ScientificNumber actual = createInstanceByInteger(source);
@@ -297,7 +289,11 @@ class ScientificNumberTest {
     assertEquals(expected, actual);
   }
 
-  private static ScientificNumber createInstanceByInteger(int value) {
+  private ScientificNumber createInstanceByInteger(int value) {
     return new ScientificNumber(value, 0);
+  }
+
+  private static Stream<Integer> provideIntegers() {
+    return Stream.generate(NumberFixture::anInt).limit(10);
   }
 }
