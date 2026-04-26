@@ -15,7 +15,11 @@ public final class NumberFixture {
     return Instancio.gen().doubles().range(1.0, 10.0).get();
   }
 
-  public static int anInt() {
+  public static int bigInt() {
     return Instancio.gen().ints().range(0, 100_000_000).get();
+  }
+
+  public static int smallInt() {
+    return Instancio.gen().ints().range(0, 10_000).get();
   }
 }
