@@ -1,3 +1,9 @@
+### local.gradle ###
+local.gradle
+
+### environment variables ###
+.env
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/

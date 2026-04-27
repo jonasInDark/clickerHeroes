@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/clickerheroes
+    username: clickerheroes
+    password: clickerheroes
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    database: PostgreSQL
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.batch_size: 100
+        order_inserts: true
+        order_updates: true
+        default_batch_fetch_size: 500
+    open-in-view: false
+
+logging:
+  level:
+    root: info
+    com.metDaisy.clickerheroes: debug
+    org.hibernate.orm.jdbc.bind: warn
+    org.hibernate.SQL: warn
+  file:
+    name: .logs/clickerheroes.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.log
+      max-file-size: 10MB
+      clean-history-on-start: true
+      max-history: 30
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %clr(%-5level) [%logger{36}] - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
