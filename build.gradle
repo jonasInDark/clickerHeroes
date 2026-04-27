@@ -67,9 +67,6 @@ def jacocoExcludes = [
         "**/*Event.class",
         "**/entity/constant/**"
 ]
-for (qPattern in "**/QA".."**/QZ") {
-    jacocoExcludes.add(qPattern + "*")
-}
 
 test {
     useJUnitPlatform()
