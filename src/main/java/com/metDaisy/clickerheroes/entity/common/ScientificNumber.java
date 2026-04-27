@@ -1,20 +1,20 @@
 package com.metDaisy.clickerheroes.entity.common;
 
 import jakarta.persistence.Embeddable;
+import java.util.Collection;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Embeddable
 public class ScientificNumber {
-  private static double[] POSITIVE_POWER_OF_TEN = {
-    1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10
+
+  private static final double[] POSITIVE_POWER_OF_TEN = {
+      1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10
   };
-  private static double[] NEGATIVE_POWER_OF_TEN = {1e0, 1e-1, 1e-2, 1e-3};
+  private static final double[] NEGATIVE_POWER_OF_TEN = {1e0, 1e-1, 1e-2, 1e-3};
   private static final double EPSILON = 1e-8;
   private double mantissa;
   private int exponent;
@@ -26,10 +26,17 @@ public class ScientificNumber {
   }
 
   @Override
+  public String toString() {
+    return "%.3f x e%d".formatted(mantissa, exponent);
+  }
+
+  @Override
   public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     ScientificNumber that = (ScientificNumber) o;
-    return Math.abs(mantissa - that.mantissa) < EPSILON && exponent == that.exponent;
+    return Double.compare(mantissa, that.mantissa) == 0 && exponent == that.exponent;
   }
 
   @Override
@@ -70,7 +77,7 @@ public class ScientificNumber {
     setNumber(other);
   }
 
-  public void addAll(ScientificNumber[] others) {
+  public void addAll(Collection<ScientificNumber> others) {
     for (ScientificNumber other : others) {
       add(other);
     }

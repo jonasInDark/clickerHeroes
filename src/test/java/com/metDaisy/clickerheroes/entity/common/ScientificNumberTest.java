@@ -1,225 +1,233 @@
 package com.metDaisy.clickerheroes.entity.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.metDaisy.clickerheroes.fixture.NumberFixture;
-import java.util.stream.Stream;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 class ScientificNumberTest {
 
   @Nested
-  @DisplayName("init ZERO")
-  class Zero {
+  @DisplayName("초기화 및 정규화 (Initialization)")
+  class Initialization {
 
     @Test
-    @DisplayName("값이 0인 경우 객체 생성 시 mantissa=0.0, exponent=0 와 같다")
-    void successToInitZero() {
+    @DisplayName("값이 0인 경우 mantissa=0.0, exponent=0 으로 초기화된다")
+    void initZero() {
       ScientificNumber zero = new ScientificNumber(0, 0);
-      assertAll(
-          () -> assertEquals(0, zero.getExponent()), () -> assertEquals(0.0, zero.getMantissa()));
-    }
-  }
-
-  @ParameterizedTest(name = "0보다 큰 임의의 정수에 대해 객체 생성 성공, {0}")
-  @MethodSource("provideBigIntegers")
-  void successToNormalize(int value) {
-    // given
-    ScientificNumber expected = new ScientificNumber(value, 0);
-
-    // when & then
-    validateEqual(expected, value);
-  }
-
-  @ParameterizedTest(
-      name = "0보다 큰 임의의 정수에 대해 객체 생성 후 0보다 큰 임의의 정수를 곱할 수 있다\n" + "value={0}, scalar={1}")
-  @MethodSource("provideSmallIntegerPairs")
-  void multiplyByScalar(int value, int scalar) {
-    // given
-    ScientificNumber expected = new ScientificNumber(value, 0);
-    expected.multiply(scalar);
-
-    // when & then
-    validateEqual(expected, value * scalar);
-  }
-
-  @ParameterizedTest(
-      name = """
-          0보다 큰 임의의 정수에 대해 객체 생성 후 객체 간 곱셈을 할 수 있다
-          두 정수의 곱이 integer 범위 안에 있는 경우에 대해서 테스트한다
-          long 타입을 객체로 만드는 경우가 없다
-          value1={0}, value2={1}""")
-  @MethodSource("provideSmallIntegerPairs")
-  void multiplyByInstance(int value1, int value2) {
-    // given
-    ScientificNumber expected = new ScientificNumber(value1, 0);
-    ScientificNumber other = new ScientificNumber(value2, 0);
-    expected.multiply(other);
-
-    // when & then
-    validateEqual(expected, value1 * value2);
-  }
-
-  @ParameterizedTest(name = "0보다 큰 임의의 정수에 대해 객체 생성 후 객체 간 뺄셈을 할 수 있다\n"
-      + "value1={0}, value2={1}")
-  @MethodSource("provideSmallIntegerPairs")
-  void subtractByInstance(int value1, int value2) {
-    // given
-    int big = Math.max(value1, value2);
-    int small = Math.min(value1, value2);
-    ScientificNumber expected = new ScientificNumber(big, 0);
-    ScientificNumber other = new ScientificNumber(small, 0);
-    expected.subtract(other);
-
-    // when & then
-    validateEqual(expected, big - small);
-  }
-
-  @Nested
-  @DisplayName("add")
-  class Add {
-
-    @Test
-    @DisplayName("0 + 0 = 0")
-    void add1() {
-      ScientificNumber inst1 = createInstanceByInteger(0);
-      ScientificNumber inst2 = createInstanceByInteger(0);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(0);
-      assertEquals(expected, inst1);
+      assertThat(zero.getMantissa()).isEqualTo(0.0);
+      assertThat(zero.getExponent()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("1 + 0 = 0")
-    void add2() {
-      ScientificNumber inst1 = createInstanceByInteger(1);
-      ScientificNumber inst2 = createInstanceByInteger(0);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(1);
-      assertEquals(expected, inst1);
-    }
-
-    @Test
-    @DisplayName("3141 + 1 = 3.142 x 10**3")
-    void add3() {
-      ScientificNumber inst1 = createInstanceByInteger(3141);
-      ScientificNumber inst2 = createInstanceByInteger(1);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(3142);
-      assertEquals(expected, inst1);
-    }
-
-    @Test
-    @DisplayName("3141 + 41 = 3.182 x 10**3")
-    void add4() {
-      ScientificNumber inst1 = createInstanceByInteger(3141);
-      ScientificNumber inst2 = createInstanceByInteger(41);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(3182);
-      assertEquals(expected, inst1);
-    }
-
-    @Test
-    @DisplayName("3141 + 141 = 3.282 x 10**3")
-    void add5() {
-      ScientificNumber inst1 = createInstanceByInteger(3141);
-      ScientificNumber inst2 = createInstanceByInteger(141);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(3282);
-      assertEquals(expected, inst1);
-    }
-
-    @Test
-    @DisplayName("3141 + 3141 = 6.282 x 10**3")
-    void add6() {
-      ScientificNumber inst1 = createInstanceByInteger(3141);
-      ScientificNumber inst2 = createInstanceByInteger(3141);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(6282);
-      assertEquals(expected, inst1);
-    }
-
-    @Test
-    @DisplayName("3141000 + 3141 = 3.144 x 10**6")
-    void add7() {
-      ScientificNumber inst1 = createInstanceByInteger(3141000);
-      ScientificNumber inst2 = createInstanceByInteger(3141);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(3144000);
-      assertEquals(expected, inst1);
-    }
-
-    @Test
-    @DisplayName("3141592 + 3141592 = 6.282 x 10**6")
-    void add8() {
-      ScientificNumber inst1 = createInstanceByInteger(3141592);
-      ScientificNumber inst2 = createInstanceByInteger(3141592);
-      inst1.add(inst2);
-      ScientificNumber expected = createInstanceByInteger(6282000);
-      assertEquals(expected, inst1);
+    @DisplayName("생성 시 값이 자동으로 정규화(1.0 이상 10.0 미만)된다")
+    void normalizeSuccess() {
+      // 1500 -> 1.5 * 10^3
+      ScientificNumber number = new ScientificNumber(1500, 0);
+      assertThat(number.getMantissa()).isEqualTo(1.5);
+      assertThat(number.getExponent()).isEqualTo(3);
     }
   }
 
   @Nested
-  @DisplayName("addAll")
+  @DisplayName("항등원 및 0 연산 (Identity Element)")
+  class Identity {
+
+    @Test
+    @DisplayName("덧셈 항등원: 0 + 0 = 0")
+    void addZeroToZero() {
+      ScientificNumber zero1 = new ScientificNumber(0, 0);
+      ScientificNumber zero2 = new ScientificNumber(0, 0);
+      zero1.add(zero2);
+
+      assertThat(zero1.getMantissa()).isEqualTo(0.0);
+      assertThat(zero1.getExponent()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("덧셈 항등원: 0 + A = A, A + 0 = A")
+    void addIdentity() {
+      ScientificNumber zero = new ScientificNumber(0, 0);
+      ScientificNumber a = new ScientificNumber(5.0, 2); // 500
+
+      zero.add(a);
+      assertThat(zero.getMantissa()).isEqualTo(5.0);
+      assertThat(zero.getExponent()).isEqualTo(2);
+
+      ScientificNumber b = new ScientificNumber(5.0, 2);
+      ScientificNumber zero2 = new ScientificNumber(0, 0);
+      b.add(zero2);
+      assertThat(b.getMantissa()).isEqualTo(5.0);
+      assertThat(b.getExponent()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("곱셈 항등원: A * 1 = A")
+    void multiplyIdentity() {
+      ScientificNumber a = new ScientificNumber(3.5, 4);
+      ScientificNumber one = new ScientificNumber(1.0, 0); // 1
+
+      a.multiply(one);
+      assertThat(a.getMantissa()).isEqualTo(3.5);
+      assertThat(a.getExponent()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("0 곱셈: A * 0 = 0")
+    void multiplyByZero() {
+      ScientificNumber a = new ScientificNumber(3.5, 4);
+      ScientificNumber zero = new ScientificNumber(0, 0);
+
+      a.multiply(zero);
+      assertThat(a.getMantissa()).isEqualTo(0.0);
+      assertThat(a.getExponent()).isEqualTo(0);
+    }
+  }
+
+  @Nested
+  @DisplayName("덧셈 (Addition) - 지수 차이(Gap) 검증")
+  class Addition {
+
+    @Test
+    @DisplayName("지수 차이가 0 (같은 자리수)일 때 정상 덧셈된다")
+    void addGap0() {
+      ScientificNumber base = new ScientificNumber(1.0, 3); // 1,000
+      ScientificNumber target = new ScientificNumber(2.0, 3); // 2,000
+
+      base.add(target); // 3,000
+      assertThat(base.getMantissa()).isEqualTo(3.0);
+      assertThat(base.getExponent()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("지수 차이가 1 (10배 차이)일 때 정상 덧셈된다")
+    void addGap1() {
+      ScientificNumber base = new ScientificNumber(1.0, 3); // 1,000
+      ScientificNumber target = new ScientificNumber(5.0, 2); // 500
+
+      base.add(target); // 1,500
+      assertThat(base.getMantissa()).isEqualTo(1.5);
+      assertThat(base.getExponent()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("지수 차이가 2 (100배 차이)일 때 정상 덧셈된다")
+    void addGap2() {
+      ScientificNumber base = new ScientificNumber(1.0, 3); // 1,000
+      ScientificNumber target = new ScientificNumber(5.0, 1); // 50
+
+      base.add(target); // 1,050
+      assertThat(base.getMantissa()).isEqualTo(1.05);
+      assertThat(base.getExponent()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("지수 차이가 3 (1000배 차이)일 때 정상 덧셈된다")
+    void addGap3() {
+      ScientificNumber base = new ScientificNumber(1.0, 3); // 1,000
+      ScientificNumber target = new ScientificNumber(5.0, 0); // 5
+
+      base.add(target); // 1,005
+      assertThat(base.getMantissa()).isEqualTo(1.005);
+      assertThat(base.getExponent()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("지수 차이가 3을 초과(10000배 이상)하면 너무 작은 값이므로 무시된다")
+    void addGapIgnored() {
+      ScientificNumber base = new ScientificNumber(1.0, 4); // 10,000
+      ScientificNumber target = new ScientificNumber(9.0, 0); // 9
+
+      base.add(target); // 10,000 유지
+      assertThat(base.getMantissa()).isEqualTo(1.0);
+      assertThat(base.getExponent()).isEqualTo(4);
+    }
+  }
+
+  @Nested
+  @DisplayName("다중 덧셈 (AddAll)")
   class AddAll {
 
     @Test
-    @DisplayName("0 + {0, 0, 0} = 0")
-    void addAll1() {
-      ScientificNumber inst1 = createInstanceByInteger(0);
-      ScientificNumber[] inst2 = {
-          createInstanceByInteger(0), createInstanceByInteger(0), createInstanceByInteger(0)
-      };
-      inst1.addAll(inst2);
-      ScientificNumber expected = createInstanceByInteger(0);
-      assertEquals(expected, inst1);
+    @DisplayName("여러 개의 객체를 전달하면 순차적으로 모두 합산된다")
+    void addAll_Success() {
+      ScientificNumber base = new ScientificNumber(1.0, 3); // 1,000
+
+      List<ScientificNumber> targets = List.of(
+          new ScientificNumber(2.0, 3), // 2,000
+          new ScientificNumber(3.0, 3), // 3,000
+          new ScientificNumber(4.0, 3)  // 4,000
+      );
+
+      base.addAll(targets); // 10,000 -> 1.0e4
+      assertThat(base.getMantissa()).isEqualTo(1.0);
+      assertThat(base.getExponent()).isEqualTo(4);
     }
 
     @Test
-    @DisplayName("0 + {3141, 3141, 3141} = 9423")
-    void addAll2() {
-      ScientificNumber inst1 = createInstanceByInteger(0);
-      ScientificNumber[] inst2 = {
-          createInstanceByInteger(3141), createInstanceByInteger(3141),
-          createInstanceByInteger(3141)
-      };
-      inst1.addAll(inst2);
-      ScientificNumber expected = createInstanceByInteger(9423);
-      assertEquals(expected, inst1);
+    @DisplayName("addAll 실행 중에도 지수 차이가 큰 값은 자동으로 합산에서 제외된다")
+    void addAll_IgnoreLargeGapInLoop() {
+      ScientificNumber base = new ScientificNumber(1.0, 5); // 100,000
+
+      List<ScientificNumber> targets = List.of(
+          new ScientificNumber(2.0, 5), // 200,000 (더해짐)
+          new ScientificNumber(9.0, 1), // 90 (무시됨)
+          new ScientificNumber(5.0, 4)  // 50,000 (더해짐)
+      );
+
+      base.addAll(targets); // 350,000 -> 3.5e5
+      assertThat(base.getMantissa()).isEqualTo(3.5);
+      assertThat(base.getExponent()).isEqualTo(5);
     }
   }
 
-  private void validateEqual(ScientificNumber expected, int actual) {
-    // When
-    int expectedExponent = (int) Math.log10(actual);
-    double rawMantissa = actual / Math.pow(10, expectedExponent);
-    double expectedMantissa = Math.floor((rawMantissa + 1e-8) * 1000.0) / 1000.0;
+  @Nested
+  @DisplayName("곱셈 및 뺄셈 (Multiplication & Subtraction)")
+  class MultiplyAndSubtract {
 
-    // Then
-    assertThat(expected.getExponent()).as("지수 계산 오류").isEqualTo(expectedExponent);
-    assertThat(expected.getMantissa()).as("가수 범위 오류").isGreaterThanOrEqualTo(1.0).isLessThan(10.0);
-    assertThat(expected.getMantissa()).as("가수 정밀도 오류").isCloseTo(expectedMantissa, within(1e-8));
-  }
+    @Test
+    @DisplayName("객체 간 곱셈 시 가수는 곱해지고 지수는 더해진다")
+    void multiplyByInstance() {
+      ScientificNumber base = new ScientificNumber(2.0, 3); // 2,000
+      ScientificNumber target = new ScientificNumber(3.0, 2); // 300
 
-  private ScientificNumber createInstanceByInteger(int value) {
-    return new ScientificNumber(value, 0);
-  }
+      base.multiply(target); // 600,000 -> 6.0e5
+      assertThat(base.getMantissa()).isEqualTo(6.0);
+      assertThat(base.getExponent()).isEqualTo(5);
+    }
 
-  private static Stream<Integer> provideBigIntegers() {
-    return Stream.generate(NumberFixture::bigInt).limit(10);
-  }
+    @Test
+    @DisplayName("상수(Scalar) 곱셈 시 가수에 값이 곱해진 후 정규화된다")
+    void multiplyByScalar() {
+      ScientificNumber base = new ScientificNumber(2.5, 2); // 250
+      base.multiply(4.0); // 1000 -> 1.0e3
 
-  private static Stream<Arguments> provideSmallIntegerPairs() {
-    return Stream.generate(() -> Arguments.of(NumberFixture.smallInt(), NumberFixture.smallInt()))
-        .limit(10);
+      assertThat(base.getMantissa()).isEqualTo(1.0);
+      assertThat(base.getExponent()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("뺄셈 시 정상적으로 값이 차감된다")
+    void subtractSuccess() {
+      ScientificNumber base = new ScientificNumber(3.0, 3); // 3,000
+      ScientificNumber target = new ScientificNumber(1.0, 3); // 1,000
+
+      base.subtract(target); // 2,000 -> 2.0e3
+      assertThat(base.getMantissa()).isEqualTo(2.0);
+      assertThat(base.getExponent()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("뺄셈 시에도 지수 차이가 3을 초과하면 연산을 무시한다")
+    void subtractIgnored() {
+      ScientificNumber base = new ScientificNumber(1.0, 5); // 100,000
+      ScientificNumber target = new ScientificNumber(5.0, 1); // 50
+
+      base.subtract(target); // 100,000 유지
+      assertThat(base.getMantissa()).isEqualTo(1.0);
+      assertThat(base.getExponent()).isEqualTo(5);
+    }
   }
 }
