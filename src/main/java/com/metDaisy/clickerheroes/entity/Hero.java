@@ -7,11 +7,15 @@ import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 
 @Getter
@@ -29,20 +33,20 @@ public class Hero extends ImmutableEntity {
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "mantissa", column = @Column(name = "base_dps_mantissa")),
-    @AttributeOverride(name = "exponent", column = @Column(name = "base_dps_exponent"))
+      @AttributeOverride(name = "mantissa", column = @Column(name = "base_dps_mantissa")),
+      @AttributeOverride(name = "exponent", column = @Column(name = "base_dps_exponent"))
   })
   private ScientificNumber baseDps;
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "mantissa", column = @Column(name = "base_price_mantissa")),
-    @AttributeOverride(name = "exponent", column = @Column(name = "base_price_exponent"))
+      @AttributeOverride(name = "mantissa", column = @Column(name = "base_price_mantissa")),
+      @AttributeOverride(name = "exponent", column = @Column(name = "base_price_exponent"))
   })
   private ScientificNumber basePrice;
 
-  @OneToMany(mappedBy = "hero")
-  private Set<HeroSkill> heroSkills = new LinkedHashSet<>();
+  @OneToMany(mappedBy = "hero", fetch = FetchType.LAZY)
+  private final Set<HeroSkill> heroSkills = new LinkedHashSet<>();
 
   @Builder
   public Hero(

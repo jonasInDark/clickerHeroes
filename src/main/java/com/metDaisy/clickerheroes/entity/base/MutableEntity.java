@@ -10,7 +10,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 public abstract class MutableEntity extends ImmutableEntity {

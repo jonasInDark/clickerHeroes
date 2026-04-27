@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "activated_hero_skills")
@@ -24,11 +24,11 @@ public class ActivatedHeroSkill extends MutableEntity {
   @JoinColumn(name = "hero_skill_id", nullable = false)
   private HeroSkill heroSkill;
 
+  @Builder.Default
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 10)
   private HeroSkillStatus status = HeroSkillStatus.NOT_LEARNED;
 
-  @Builder
   public ActivatedHeroSkill(HiredHero hiredHero, HeroSkill heroSkill, HeroSkillStatus status) {
     this.hiredHero = hiredHero;
     this.heroSkill = heroSkill;

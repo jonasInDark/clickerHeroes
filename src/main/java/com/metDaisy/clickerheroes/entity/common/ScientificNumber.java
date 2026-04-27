@@ -1,5 +1,6 @@
 package com.metDaisy.clickerheroes.entity.common;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.Collection;
 import java.util.Objects;
@@ -16,7 +17,11 @@ public class ScientificNumber {
   };
   private static final double[] NEGATIVE_POWER_OF_TEN = {1e0, 1e-1, 1e-2, 1e-3};
   private static final double EPSILON = 1e-8;
+
+  @Column(nullable = false)
   private double mantissa;
+
+  @Column(nullable = false)
   private int exponent;
 
   public ScientificNumber(double mantissa, int exponent) {
