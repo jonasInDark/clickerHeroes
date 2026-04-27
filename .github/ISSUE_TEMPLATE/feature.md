@@ -14,6 +14,5 @@ labels: feature
 ### Todo
 
 - [ ] XXX CRUD
-- [ ] ㅁㄴㅇ
 
 ---

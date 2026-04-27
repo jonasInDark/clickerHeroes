@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class ClickerHeroes {
+
   private final UserRepository userRepository;
-  
+
 }

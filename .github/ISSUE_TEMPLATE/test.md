@@ -8,6 +8,5 @@ labels: test
 ### Todo
 
 - [ ] CRUD 단위 테스트
-- [ ] asd
 
 ---

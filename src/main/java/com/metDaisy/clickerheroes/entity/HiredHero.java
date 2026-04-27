@@ -2,7 +2,15 @@ package com.metDaisy.clickerheroes.entity;
 
 import com.metDaisy.clickerheroes.entity.base.MutableEntity;
 import com.metDaisy.clickerheroes.entity.common.ScientificNumber;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,15 +34,15 @@ public class HiredHero extends MutableEntity {
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "mantissa", column = @Column(name = "dps_mantissa")),
-    @AttributeOverride(name = "exponent", column = @Column(name = "dps_exponent"))
+      @AttributeOverride(name = "mantissa", column = @Column(name = "dps_mantissa")),
+      @AttributeOverride(name = "exponent", column = @Column(name = "dps_exponent"))
   })
   private ScientificNumber dps;
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "mantissa", column = @Column(name = "price_mantissa")),
-    @AttributeOverride(name = "exponent", column = @Column(name = "price_exponent"))
+      @AttributeOverride(name = "mantissa", column = @Column(name = "price_mantissa")),
+      @AttributeOverride(name = "exponent", column = @Column(name = "price_exponent"))
   })
   private ScientificNumber price;
 

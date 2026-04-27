@@ -22,7 +22,7 @@ spring:
 logging:
   level:
     root: info
-    com.sprint.mission.discodeit: debug
+    com.metDaisy.clickerheroes: debug
     org.hibernate.orm.jdbc.bind: warn
     org.hibernate.SQL: warn
   file:

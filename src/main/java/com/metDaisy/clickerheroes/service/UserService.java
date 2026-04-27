@@ -1,7 +1,7 @@
 package com.metDaisy.clickerheroes.service;
 
-import com.metDaisy.clickerheroes.dto.request.UserCreateRequest;
 import com.metDaisy.clickerheroes.dto.UserDto;
+import com.metDaisy.clickerheroes.dto.request.UserCreateRequest;
 import com.metDaisy.clickerheroes.entity.User;
 import com.metDaisy.clickerheroes.mapper.UserMapper;
 import com.metDaisy.clickerheroes.repository.UserRepository;
@@ -13,9 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserService {
+
   private final UserRepository userRepository;
   private final UserMapper userMapper;
-  
+
   public UserDto create(UserCreateRequest request) {
     User user = userMapper.toEntity(request);
     userRepository.save(user);

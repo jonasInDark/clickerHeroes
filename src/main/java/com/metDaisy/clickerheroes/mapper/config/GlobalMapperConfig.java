@@ -11,4 +11,6 @@ import org.mapstruct.ReportingPolicy;
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public interface GlobalMapperConfig {}
+public interface GlobalMapperConfig {
+
+}
