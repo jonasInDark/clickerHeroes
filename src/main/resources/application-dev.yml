@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:$5432/clickerheroes
+    url: jdbc:postgresql://localhost:5432/clickerheroes
     username: clickerheroes
     password: clickerheroes
   jpa:
