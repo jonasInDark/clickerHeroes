@@ -230,4 +230,44 @@ class ScientificNumberTest {
       assertThat(base.getExponent()).isEqualTo(5);
     }
   }
+
+  @Nested
+  @DisplayName("Object 메서드 (equals, hashCode, toString)")
+  class ObjectMethods {
+
+    @Test
+    @DisplayName("toString()은 '가수(소수점 3자리) x e지수' 포맷으로 출력된다")
+    void customToString() {
+      ScientificNumber num1 = new ScientificNumber(1.5, 3);
+      ScientificNumber num2 = new ScientificNumber(5.0, 0);
+
+      assertThat(num1.toString()).isEqualTo("1.500 x e3");
+      assertThat(num2.toString()).isEqualTo("5.000 x e0");
+    }
+
+    @Test
+    @DisplayName("정규화된 결과가 같은 두 객체는 equals가 true이고 hashCode가 동일하다")
+    void equalsAndHashCode_Same() {
+      // 25.0 * 10^4 -> 정규화 -> 2.5 * 10^5
+      ScientificNumber num1 = new ScientificNumber(25.0, 4);
+      // 2.5 * 10^5 -> 정규화 -> 2.5 * 10^5
+      ScientificNumber num2 = new ScientificNumber(2.5, 5);
+
+      assertThat(num1).isEqualTo(num2);
+      assertThat(num1.hashCode()).isEqualTo(num2.hashCode());
+    }
+
+    @Test
+    @DisplayName("가수나 지수 중 하나라도 다르면 equals는 false이다")
+    void equals_Different() {
+      ScientificNumber base = new ScientificNumber(2.0, 3);
+      ScientificNumber diffMantissa = new ScientificNumber(3.0, 3);
+      ScientificNumber diffExponent = new ScientificNumber(2.0, 4);
+
+      assertThat(base).isNotEqualTo(diffMantissa);
+      assertThat(base).isNotEqualTo(diffExponent);
+      assertThat(base).isNotEqualTo(null);
+      assertThat(base).isNotEqualTo(new Object());
+    }
+  }
 }
