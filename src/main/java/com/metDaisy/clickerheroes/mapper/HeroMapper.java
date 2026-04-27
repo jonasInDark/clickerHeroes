@@ -2,6 +2,7 @@ package com.metDaisy.clickerheroes.mapper;
 
 import com.metDaisy.clickerheroes.dto.HeroDto;
 import com.metDaisy.clickerheroes.entity.Hero;
+import com.metDaisy.clickerheroes.mapper.base.BaseMapper;
 import com.metDaisy.clickerheroes.mapper.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -10,8 +11,6 @@ import org.mapstruct.MappingTarget;
     config = GlobalMapperConfig.class,
     uses = {ScientificNumberMapper.class})
 public interface HeroMapper extends BaseMapper<Hero, HeroDto> {
-
-  Hero toEntity(HeroDto heroDto);
 
   Hero partialUpdate(HeroDto heroDto, @MappingTarget Hero hero);
 }

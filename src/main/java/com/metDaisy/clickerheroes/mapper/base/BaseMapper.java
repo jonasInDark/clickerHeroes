@@ -1,4 +1,4 @@
-package com.metDaisy.clickerheroes.mapper;
+package com.metDaisy.clickerheroes.mapper.base;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package com.metDaisy.clickerheroes.mapper;
 
 import com.metDaisy.clickerheroes.dto.ActivatedHeroSkillDto;
 import com.metDaisy.clickerheroes.entity.ActivatedHeroSkill;
+import com.metDaisy.clickerheroes.mapper.base.BaseMapper;
 import com.metDaisy.clickerheroes.mapper.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 
@@ -11,5 +12,4 @@ import org.mapstruct.Mapper;
 public interface ActivatedHeroSkillMapper
     extends BaseMapper<ActivatedHeroSkill, ActivatedHeroSkillDto> {
 
-  ActivatedHeroSkill toEntity(ActivatedHeroSkillDto activatedHeroSkillDto);
 }
